@@ -3,6 +3,8 @@ package com.osmago.ms.msvcusuarios.controllers;
 import com.osmago.ms.msvcusuarios.models.entity.Usuario;
 import com.osmago.ms.msvcusuarios.services.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,10 +19,18 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService service;
 
+    @Autowired
+    private ApplicationContext context;
+
+    @GetMapping("/crash")
+    public void crash(){
+        ((ConfigurableApplicationContext)context).close();
+    }
+
     @GetMapping("/")
     public Map<String, List<Usuario>> listar(){
 
-        return Collections.singletonMap("usuarios", service.listar());
+        return Collections.singletonMap("users", service.listar());
     }
 
     @GetMapping("/{id}")
