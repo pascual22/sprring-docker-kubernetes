@@ -8,6 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,9 @@ import java.util.*;
 
 @RestController
 public class UsuarioController {
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private IUsuarioService service;
@@ -62,6 +66,8 @@ public class UsuarioController {
                     .body(Collections.singletonMap("mensaje", "Ya existe un usuario con el email " + usuario.getEmail()));
         }
 
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(usuario)) ;
     }
 
@@ -87,7 +93,7 @@ public class UsuarioController {
 
             usuariodb.setNombre(usuario.getNombre());
             usuariodb.setEmail(usuario.getEmail());
-            usuariodb.setPassword(usuario.getPassword());
+            usuariodb.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
             return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(usuariodb));
         }
@@ -115,6 +121,21 @@ public class UsuarioController {
 
     }
 
+    @GetMapping("/authorized")
+    public Map<String, Object> authorized(@RequestParam String code){
+        return Collections.singletonMap("code", code);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> loginByEmail(@RequestParam String email) {
+        Optional<Usuario> o = service.porEmail(email);
+        if (o.isPresent()){
+            return ResponseEntity.ok(o.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
     private ResponseEntity<Map<String, String>> validar(BindingResult result) {
         Map<String, String> errores = new HashMap<>();
         result.getFieldErrors().forEach(error -> {
@@ -122,4 +143,6 @@ public class UsuarioController {
         });
         return ResponseEntity.badRequest().body(errores);
     }
+
+
 }

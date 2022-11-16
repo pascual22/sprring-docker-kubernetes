@@ -16,5 +16,5 @@ public interface IUsuarioClientRest {
     Usuario crear(@RequestBody Usuario usuario);
 
     @GetMapping("/usuarios-curso")
-    List<Usuario> obtenerAlumnos(@RequestParam Iterable<Long> ids);
+    List<Usuario> obtenerAlumnos(@RequestParam Iterable<Long> ids, @RequestHeader(value = "Authorization", required = true) String token);
 }

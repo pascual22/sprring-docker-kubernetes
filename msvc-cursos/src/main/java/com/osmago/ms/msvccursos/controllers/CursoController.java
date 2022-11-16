@@ -25,8 +25,8 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> detalle(@PathVariable Long id){
-        Optional<Curso> cursoOtp = service.porIdUsuarios(id);//service.porId(id);
+    public ResponseEntity<?> detalle(@PathVariable Long id, @RequestHeader(value = "Authorization", required = true) String token){
+        Optional<Curso> cursoOtp = service.porIdUsuarios(id, token);//service.porId(id);
 
         if(cursoOtp.isPresent()){
             return ResponseEntity.ok(cursoOtp.get());

@@ -12,7 +12,7 @@ public interface ICursoService {
     Optional<Curso> porId(Long id);
     Curso guardar(Curso curso);
     void eliminar(long id);
-    Optional<Curso> porIdUsuarios(Long id);
+    Optional<Curso> porIdUsuarios(Long id, String token);
 
     void eliminarUsuarioCurso(Long id);
 

@@ -48,7 +48,7 @@ public class CursoServiceImpl implements ICursoService{
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Curso> porIdUsuarios(Long id) {
+    public Optional<Curso> porIdUsuarios(Long id, String token) {
 
         Optional<Curso> opt = repository.findById(id);
 
@@ -58,7 +58,7 @@ public class CursoServiceImpl implements ICursoService{
             if(!curso.getCursousuarios().isEmpty()){
                 List<Long> ids = curso.getCursousuarios().stream().map( c -> c.getUsuarioId()).collect(Collectors.toList());
 
-                List<Usuario> usuarios = cliente.obtenerAlumnos(ids);
+                List<Usuario> usuarios = cliente.obtenerAlumnos(ids, token);
 
                 curso.setUsuarios(usuarios);
             }
